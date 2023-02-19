@@ -46,4 +46,4 @@ _SETUP = {
     'install_requires': _strip('requirements.txt').split(),
 }
 
-print(_SETUP)
+setup(**_SETUP)
