@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pytest = "*"
+flake8 = "*"
+black = "*"
+mypy = "*"
+
+[packages]
+ricing = {editable = true, path = "."}
