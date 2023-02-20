@@ -10,4 +10,8 @@ black = "*"
 mypy = "*"
 
 [packages]
-ricing = {editable = true, path = "."}
+ricing = {path = "."}
+
+[scripts]
+test = "flake8 . && pylint $(pwd) && pytest tests/"
+tests = "pytest tests/"
