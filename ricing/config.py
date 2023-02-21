@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Describe a *Config objects."""
 from os import getenv
+from io import BytesIO, StringIO
 from uuid import uuid4, UUID
 from datetime import datetime
 from pathlib import Path
@@ -46,6 +47,17 @@ class PathNameUUID(BaseModel):
         if self.use_bytes is True:
             return self.path.read_bytes()
         return self.path.read_text(encoding=self.encoding)
+
+    def load_file(self, contents=Union[str, bytes, StringIO, BytesIO]):
+        """Load contents into path."""
+        if isinstance(contents, str):
+            self.path.write_text(data=contents, encoding=self.encoding)
+        elif isinstance(contents, StringIO):
+            self.path.write_text(contents.getvalue(), encoding=self.encoding)
+        elif isinstance(contents, bytes):
+            self.path.write_bytes(contents)
+        elif isinstance(contents, BytesIO):
+            self.path.write_bytes(contents._getvalue())
 
 
 class Program(PathNameUUID):
@@ -106,7 +118,7 @@ class RiceConfig(BaseModel):
             elif isinstance(self.programs, list):
                 self.programs.append(program)
             elif isinstance(self.programs, Program):
-                self.programs n= [self.programs, program]
+                self.programs = [self.programs, program]
         if all([isinstance(p, Program) for p in programs]):
             if self.programs is None:
                 self.programs = programs
@@ -128,7 +140,7 @@ class Config(BaseModel):
     def add_config(
         self,
         config: RiceConfig | None = None,
-        configs: List[RiceConfig] | None,
+        configs: List[RiceConfig] | None = None,
     ):
         """Add a RiceConfig to the system configuration."""
         if config is not None:
@@ -161,4 +173,4 @@ class Config(BaseModel):
                 if include_content is True:
                     data[config]['content'].append(file.contents())
             for program in config.programs:
-                data[config]['program].append(program.name)
+                data[config][program].append(program.name)
