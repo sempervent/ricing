@@ -12,9 +12,9 @@ from ricing.fxns import capture_cmd, which_output
 @pytest.mark.parametrize(
     'cmd',
     ['whoami', 'ls', 'ls -lash', 'ls -lash | grep .py',])
-def test_capture_cmd():
+def test_capture_cmd(cmd):
     """Test capture_cmd."""
-    output = capture_cmd('whoami')
+    output = capture_cmd(cmd)
     assert isinstance(output, str)
     if cmd == 'whoami':
         assert output == environ['USER']
