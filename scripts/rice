@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # vim: filetype=python
 """rice is a customization manager written in python."""
-from ricing.parsers import (
-    delete_parser,
-    rice_parser,
-)
+from ricing.parsers import rice_parser
 
 
+if __name__ == "__main__":
+    parser = rice_parser()
+    args = parser.parse_args()

@@ -27,7 +27,7 @@ def rice_parser():
         prog='rice',
         description='customize and version your rices')
     parser.add_subparsers(dest='command')
-    parser.add_argument('-v', '--verbose', action="store_true', type=bool,
+    parser.add_argument('-v', '--verbose', action='store_true', type=bool,
                         dest='verbose',
                         default=False, help="Make rice chatty.")
     return parser

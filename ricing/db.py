@@ -3,13 +3,15 @@
 """Provide a RiceDB class for interacting with the RICE_DB."""
 from typing import Optional, Any
 from sqlite3 import connect as connect2sqlite3
+from sqlalchemy.orm import
 
 from pydantic import BaseModel
 
 from ricing import RICE_CONFIG_DB
 
 DB_CONNECTS = {
-    'sqlite': connect2sqlite3
+    'sqlite': connect2sqlite3,
+    'sqlalchemy': create_engine,
 }
 
 
@@ -42,6 +44,7 @@ class RiceDB(BaseModel):
         if self.connection is None:
             self.connection = DB_CONNECTS[self.conn_fxn](
                 self.conn_str, **self.conn_kwargs)
+
 
     def open(self):
         """Open method to maintain a connection for long sessions."""
