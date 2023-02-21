@@ -12,5 +12,7 @@ _RICE_DB_TYPE = 'sqlite'
 
 RICE_CONFIG_DIR = f'{_CONFIG_DIR}{sep}{_RICE_DIR}{sep}'
 RICE_CONFIG_DB = f'{_RICE_DB_TYPE}://{RICE_CONFIG_DIR}{_RICE_DB}'
-RICE_HOME = \
+RICE_DB_PATH = \
     (Path(getenv('HOME')).resolve() / _CONFIG_DIR) / _RICE_DIR / _RICE_DB
+RICE_HOME = \
+    (Path(getenv('HOME')).resolve() / _CONFIG_DIR) / _RICE_DIR
