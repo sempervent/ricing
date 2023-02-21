@@ -6,15 +6,18 @@ from sqlite3 import connect as connect2sqlite3, Connection
 
 from pydantic import BaseModel
 
-from ricing import RICE_DB
+from ricing import RICE_CONFIG_DB
 
 
 class RiceDB(BaseModel):
     """RiceDB connects to ricing's sqlite database."""
-    conn_str: str = RICE_DB
+    conn_str: str = RICE_CONFIG_DB
     conn_fxn: Callable = connect2sqlite3
     conn_kwargs: Optional[dict] = None  # TODO create models of specifics
     connection: Optional[Connection] = None
+
+    class Config:
+        arbitrary_types_allowed: True
 
     def __enter__(self):
         """Use with to enter database conneciton."""
