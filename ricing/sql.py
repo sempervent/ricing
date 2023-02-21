@@ -47,7 +47,7 @@ class Program(Base):
     config_id = Column(Integer, ForeignKey('config.id'))
     config = relationship('Config', back_populates='program')
     file_id = Column(String, ForeignKey('file.id'))
-    file = relationship('File', back_populaties='program')
+    file = relationship('File', back_populates='program')
 
 
 def create_rice_db(connection_str: str | None, **kwargs):
