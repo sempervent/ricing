@@ -73,7 +73,7 @@ class File(PathNameUUID):
 
 class RiceConfig(BaseModel):
     """Configure a rice."""
-    id: uuid4 = uuid4()
+    id: UUID = uuid4()
     name: str
     files: Optional[List[File]] = None
     programs: Optional[List[Program]] = None
