@@ -6,8 +6,7 @@ from uuid import uuid4
 from sqlalchemy import (
     Column, Integer, String, Table, create_engine, ForeignKey
 )
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, declarative_base
 
 from ricing import RICE_CONFIG_DB
 
