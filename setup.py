@@ -4,6 +4,7 @@
    settings by storing configuration files in a hidden user directory database.
    The configuration can be saved or chosen via the command line.
 """
+from os import access, X_OK
 from pathlib import Path
 from re import sub as resub
 from sys import modules
@@ -14,12 +15,20 @@ from setuptools import setup, find_packages
 _HERE = Path(__file__).resolve().parent
 _ek = {'encoding': 'utf-8'}
 _url = f'https://github.com/sempervent/{_HERE.name}.git'
+# include all executable files in scripts directory
+_scripts = [str(f) for f in (_HERE / 'scripts').rglob('') if access(f, X_OK)]
 
 
 def _strip(file_name: str):
     """Strip text from a file."""
     return (_HERE / file_name).read_text(**_ek).strip()
 
+
+_package_data = {
+    _HERE.name: [
+        'data/neofetch.conf',
+    ],
+}
 
 _SETUP = {
     'name': _HERE.name,
@@ -44,6 +53,8 @@ _SETUP = {
         "Topic :: Database :: Front-Ends",
     ],
     'install_requires': _strip('requirements.txt').split(),
+    'package_data': _package_data,
+    'scripts': _scripts,
 }
 
 setup(**_SETUP)

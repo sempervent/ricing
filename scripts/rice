@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# vim: filetype=python
+"""rice is a customization manager written in python."""
+from ricing.parsers import (
+    delete_parser,
+    rice_parser,
+)
+
+
