@@ -49,6 +49,7 @@ def test_PathNameUUID(path):
     pnu.use_bytes = True
     if pnu.path.is_file():
         assert isinstance(pnu.contents(), bytes)
+    assert pnu.encoding == 'utf-8'
 
 
 def test_Program():

@@ -5,6 +5,7 @@ from os import getenv
 from uuid import uuid4, UUID
 from datetime import datetime
 from pathlib import Path
+from shlex import split as shlsplit
 from typing import Optional, List, Union
 
 from pydantic import BaseModel, validator
@@ -57,18 +58,15 @@ class Program(PathNameUUID):
         """Convert a config path to a Path."""
         return convert_str_to_path(path=config_path)
 
+    def call(self, *args) -> str:
+        """Call the executable with args."""
+        args = " ".join(map(str, args))
+        return capture_cmd(shlsplit(self.executable + " " + args))
+
 
 class File(PathNameUUID):
     """Configure a File for a rice."""
     program: Program
-    encoding: str = DEFAULT_ENC
-    use_bytes: bool = False
-
-    def contents(self):
-        """Retrieve the contents of the file."""
-        if self.use_bytes is True:
-            return self.path.read_bytes()
-        return self.path.read_text(encoding=self.encoding)
 
 
 class RiceConfig(BaseModel):
@@ -97,6 +95,26 @@ class RiceConfig(BaseModel):
             elif isinstance(self.files, File):
                 self.files = [self.files] + files
 
+    def add_prgoram(
+        self, program: Program | None = None,
+        programs: List[Program] | None = None,
+    ):
+        """Add a program to the programs attribute."""
+        if isinstance(program, Program):
+            if self.programs is None:
+                self.programs = [program]
+            elif isinstance(self.programs, list):
+                self.programs.append(program)
+            elif isinstance(self.programs, Program):
+                self.programs n= [self.programs, program]
+        if all([isinstance(p, Program) for p in programs]):
+            if self.programs is None:
+                self.programs = programs
+            elif isinstance(self.programs, list):
+                self.programs.extend(programs)
+            elif isinstance(self.programs, Program):
+                self.programs = [self.programs] + programs
+
 
 class Config(BaseModel):
     """A BaseConfig object."""
@@ -107,13 +125,40 @@ class Config(BaseModel):
     # below are set by internal methods, but can be set on initialization
     configs: Optional[List[RiceConfig]] = None
 
-    def add_config(self, config: RiceConfig):
+    def add_config(
+        self,
+        config: RiceConfig | None = None,
+        configs: List[RiceConfig] | None,
+    ):
         """Add a RiceConfig to the system configuration."""
-        if not isinstance(config, RiceConfig):
-            raise TypeError(f'{config} object is not of type RiceConfig')
-        if self.configs is None:
-            self.configs = [config]
-        elif isinstance(self.configs, list):
-            self.configs.append(config)
-        elif isinstance(self.configs, RiceConfig):
-            self.configs = [self.configs, config]
+        if config is not None:
+            if not isinstance(config, RiceConfig):
+                raise TypeError(f'{config} object is not of type RiceConfig')
+            if self.configs is None:
+                self.configs = [config]
+            elif isinstance(self.configs, list):
+                self.configs.append(config)
+            elif isinstance(self.configs, RiceConfig):
+                self.configs = [self.configs, config]
+        if configs is not None:
+            if not all([isinstance(c, RiceConfig) for c in configs]):
+                raise TypeError(
+                    f'{configs} contains an object that is not a RiceConfig')
+            if self.configs is None:
+                self.configs = configs
+            elif isinstance(self.configs, list):
+                self.configs.extend(configs)
+            elif isinstance(self.configs, RiceConfig):
+                self.configs = [self.configs] + configs
+
+    def retrieve_all_files(self, include_content: bool = False):
+        """Retrieve the paths of all config files."""
+        data = {}
+        for config in self.configs:
+            data[config] = {}
+            for file in config.files:
+                data[config]['files'].append(str(file.path))
+                if include_content is True:
+                    data[config]['content'].append(file.contents())
+            for program in config.programs:
+                data[config]['program].append(program.name)
