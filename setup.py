@@ -16,7 +16,9 @@ _HERE = Path(__file__).resolve().parent
 _ek = {'encoding': 'utf-8'}
 _url = f'https://github.com/sempervent/{_HERE.name}.git'
 # include all executable files in scripts directory
-_scripts = [str(f) for f in (_HERE / 'scripts').rglob('') if access(f, X_OK)]
+_scripts = [str(f) for f in (_HERE / 'scripts').rglob('*')
+            if access(f, X_OK)]  # and f.is_file()]
+print(_scripts)
 
 
 def _strip(file_name: str):
@@ -26,9 +28,11 @@ def _strip(file_name: str):
 
 _package_data = {
     _HERE.name: [
-        'data/neofetch.conf',
+        'data/*.conf',
     ],
 }
+
+print(_package_data)
 
 _SETUP = {
     'name': _HERE.name,
